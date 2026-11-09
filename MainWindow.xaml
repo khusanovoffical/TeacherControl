@@ -1,0 +1,64 @@
+<Window x:Class="TeacherControl.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TeacherControl · xumo.dev" Height="760" Width="1220"
+        MinHeight="650" MinWidth="980" WindowStartupLocation="CenterScreen"
+        Background="{StaticResource PageBrush}" Foreground="#F4F6FF">
+    <Grid Margin="24">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="18"/><RowDefinition Height="Auto"/><RowDefinition Height="18"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Left">
+                <TextBlock Text="SCHOOL CONTROL" Foreground="#8FA7FF" FontSize="12" FontWeight="Bold" CharacterSpacing="180"/>
+                <TextBlock Text="TeacherControl" FontSize="30" FontWeight="SemiBold" Margin="0,5,0,0"/>
+                <TextBlock Text="O‘qituvchi boshqaruv paneli" Foreground="{StaticResource MutedBrush}" FontSize="14"/>
+            </StackPanel>
+            <Border DockPanel.Dock="Right" Background="#2A2030" CornerRadius="12" Padding="14,9" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="8" Height="8" Fill="#F5B94C" Margin="0,0,8,0"/>
+                    <TextBlock Text="Server ulanmagan" Foreground="#FFD98A" FontSize="13"/>
+                </StackPanel>
+            </Border>
+        </DockPanel>
+        <UniformGrid Grid.Row="2" Columns="3">
+            <Border Background="{StaticResource PanelBrush}" CornerRadius="16" Padding="18" Margin="0,0,10,0">
+                <StackPanel><TextBlock Text="O‘quvchilar" Foreground="{StaticResource MutedBrush}"/><TextBlock Text="{Binding StudentCount}" FontSize="30" FontWeight="Bold" Margin="0,8,0,0"/><TextBlock Text="Ro‘yxatdagi qurilmalar" Foreground="{StaticResource MutedBrush}" FontSize="12"/></StackPanel>
+            </Border>
+            <Border Background="{StaticResource PanelBrush}" CornerRadius="16" Padding="18" Margin="5,0">
+                <StackPanel><TextBlock Text="Onlayn" Foreground="{StaticResource MutedBrush}"/><TextBlock Text="{Binding OnlineCount}" FontSize="30" FontWeight="Bold" Margin="0,8,0,0"/><TextBlock Text="Hozir ulanganlar" Foreground="{StaticResource MutedBrush}" FontSize="12"/></StackPanel>
+            </Border>
+            <Border Background="{StaticResource PanelBrush}" CornerRadius="16" Padding="18" Margin="10,0,0,0">
+                <StackPanel><TextBlock Text="Bugungi kirishlar" Foreground="{StaticResource MutedBrush}"/><TextBlock Text="{Binding TodayCount}" FontSize="30" FontWeight="Bold" Margin="0,8,0,0"/><TextBlock Text="Server sinxronlashidan keyin" Foreground="{StaticResource MutedBrush}" FontSize="12"/></StackPanel>
+            </Border>
+        </UniformGrid>
+        <Border Grid.Row="4" Background="{StaticResource PanelBrush}" CornerRadius="18" Padding="20">
+            <Grid>
+                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="14"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                <DockPanel>
+                    <StackPanel><TextBlock Text="O‘quvchilar ro‘yxati" FontSize="20" FontWeight="SemiBold"/><TextBlock Text="Qurilmalar va kirish holati" Foreground="{StaticResource MutedBrush}" Margin="0,4,0,0"/></StackPanel>
+                    <Button DockPanel.Dock="Right" Content="Yangilash" Click="Refresh_Click" Padding="16,9" Background="#26365F" Foreground="White" BorderThickness="0"/>
+                </DockPanel>
+                <TextBox Grid.Row="2" x:Name="SearchBox" Height="40" Padding="12,8" Background="#0D1426" Foreground="White" BorderBrush="#2B3857" TextChanged="SearchBox_TextChanged" ToolTip="Ism yoki familiya bo‘yicha qidirish"/>
+                <Grid Grid.Row="3" Margin="0,14,0,0">
+                    <DataGrid x:Name="StudentsGrid" ItemsSource="{Binding Students}" AutoGenerateColumns="False" IsReadOnly="True"
+                              Background="#111A2D" Foreground="#F4F6FF" BorderThickness="0" GridLinesVisibility="Horizontal"
+                              HeadersVisibility="Column" RowBackground="#141F35" AlternatingRowBackground="#18243B">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Ism" Binding="{Binding FirstName}" Width="*"/>
+                            <DataGridTextColumn Header="Familiya" Binding="{Binding LastName}" Width="*"/>
+                            <DataGridTextColumn Header="Qurilma" Binding="{Binding DeviceName}" Width="*"/>
+                            <DataGridTextColumn Header="Holat" Binding="{Binding Status}" Width="120"/>
+                            <DataGridTextColumn Header="Oxirgi faollik" Binding="{Binding LastSeen}" Width="180"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Border Background="#111A2D" IsHitTestVisible="False" Visibility="{Binding EmptyStateVisibility}">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="Hozircha o‘quvchi ma’lumoti yo‘q" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Student ilovasi serverga ulangach, ro‘yxat shu yerda ko‘rinadi." Foreground="{StaticResource MutedBrush}" Margin="0,8,0,0" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Border>
+        <TextBlock Grid.Row="4" Text="xumo.dev" Foreground="#65749A" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,18,8" FontSize="11"/>
+    </Grid>
+</Window>
