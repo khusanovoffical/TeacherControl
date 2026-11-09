@@ -29,13 +29,15 @@
                     <TextBlock Text="SchoolControl" FontSize="20" FontWeight="Bold" Margin="0,13,0,2"/>
                     <TextBlock Text="TEACHER WORKSPACE" FontSize="10" Foreground="#8494B7"/>
                     <Border Height="1" Background="#26334E" Margin="0,24,0,18"/>
-                    <TextBlock Text="ASOSIY" Foreground="#7182A7" FontSize="10" FontWeight="Bold" Margin="12,0,0,8"/>
+                    <TextBlock Text="SINFXONA" Foreground="#7182A7" FontSize="10" FontWeight="Bold" Margin="12,0,0,8"/>
                     <Button Style="{StaticResource NavItem}" Background="#202E4C" Foreground="White" Content="▦   Umumiy ko‘rinish"/>
                     <Button Style="{StaticResource NavItem}" Content="♙   O‘quvchilar"/>
+                    <Button Style="{StaticResource NavItem}" Content="▣   Ekranlar"/>
+                    <Button Style="{StaticResource NavItem}" Content="⇧   Fayllar"/>
                     <Button Style="{StaticResource NavItem}" Content="◷   Davomat"/>
                     <Button Style="{StaticResource NavItem}" Content="▤   Xabarlar"/>
                     <TextBlock Text="BOSHQARUV" Foreground="#7182A7" FontSize="10" FontWeight="Bold" Margin="12,22,0,8"/>
-                    <Button Style="{StaticResource NavItem}" Content="⌘   Qurilmalar"/>
+                    <Button Style="{StaticResource NavItem}" Content="⌘   Qurilma boshqaruvi"/>
                     <Button Style="{StaticResource NavItem}" Content="⚙   Sozlamalar"/>
                 </StackPanel>
                 <Border DockPanel.Dock="Bottom" Background="#19243A" CornerRadius="14" Padding="13" Margin="0,16,0,0">
