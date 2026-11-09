@@ -1,0 +1,23 @@
+name: Build Windows apps and API
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Build TeacherControl
+        run: dotnet build TeacherControl.csproj --configuration Release
+      - name: Build SchoolControl API
+        run: dotnet build Server/SchoolControl.Server.csproj --configuration Release
