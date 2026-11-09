@@ -13,6 +13,9 @@ public sealed class SchoolDbContext(DbContextOptions<SchoolDbContext> options) :
         student.HasKey(x => x.Id);
         student.Property(x => x.FirstName).HasMaxLength(60).IsRequired();
         student.Property(x => x.LastName).HasMaxLength(60).IsRequired();
+        student.Property(x => x.DeviceId).HasMaxLength(80).HasDefaultValue("").IsRequired();
+        student.Property(x => x.DeviceName).HasMaxLength(120).HasDefaultValue("").IsRequired();
         student.HasIndex(x => x.CreatedAtUtc);
+        student.HasIndex(x => x.DeviceId);
     }
 }
