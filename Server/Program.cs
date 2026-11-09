@@ -1,7 +1,7 @@
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Data.Common;
 using SchoolControl.Server.Data;
 using SchoolControl.Server.Models;
 
@@ -49,34 +49,10 @@ await using (var scope = app.Services.CreateAsyncScope())
     var db = scope.ServiceProvider.GetRequiredService<SchoolDbContext>();
     await db.Database.EnsureCreatedAsync();
 
-    // EnsureCreated does not update an existing SQLite database. Add the new
-    // nullable/defaulted device columns safely for installations from earlier commits.
-    await db.Database.ExecuteSqlRawAsync(
-        "ALTER TABLE Students ADD COLUMN DeviceId TEXT NOT NULL DEFAULT '';")
-        .ContinueWith(async task =>
-        {
-            if (task.IsFaulted && !task.Exception!.GetBaseException().Message.Contains("duplicate column", StringComparison.OrdinalIgnoreCase))
-                throw task.Exception.GetBaseException();
-            await Task.CompletedTask;
-        }).Unwrap();
-
-    await db.Database.ExecuteSqlRawAsync(
-        "ALTER TABLE Students ADD COLUMN DeviceName TEXT NOT NULL DEFAULT '';")
-        .ContinueWith(async task =>
-        {
-            if (task.IsFaulted && !task.Exception!.GetBaseException().Message.Contains("duplicate column", StringComparison.OrdinalIgnoreCase))
-                throw task.Exception.GetBaseException();
-            await Task.CompletedTask;
-        }).Unwrap();
-
-    await db.Database.ExecuteSqlRawAsync(
-        "ALTER TABLE Students ADD COLUMN LastSeenUtc TEXT NULL;")
-        .ContinueWith(async task =>
-        {
-            if (task.IsFaulted && !task.Exception!.GetBaseException().Message.Contains("duplicate column", StringComparison.OrdinalIgnoreCase))
-                throw task.Exception.GetBaseException();
-            await Task.CompletedTask;
-        }).Unwrap();
+    // EnsureCreated does not alter tables created by an earlier app version.
+    await EnsureColumnAsync(db, "DeviceId", "TEXT NOT NULL DEFAULT ''");
+    await EnsureColumnAsync(db, "DeviceName", "TEXT NOT NULL DEFAULT ''");
+    await EnsureColumnAsync(db, "LastSeenUtc", "TEXT NULL");
 }
 
 app.UseCors("SchoolApps");
@@ -220,3 +196,36 @@ public sealed record StudentRegistrationRequest(
     string LastName,
     string? DeviceId = null,
     string? DeviceName = null);
+
+static async Task EnsureColumnAsync(SchoolDbContext db, string columnName, string columnDefinition)
+{
+    var connection = db.Database.GetDbConnection();
+    var wasClosed = connection.State != System.Data.ConnectionState.Open;
+    if (wasClosed)
+        await connection.OpenAsync();
+
+    try
+    {
+        await using var command = connection.CreateCommand();
+        command.CommandText = "PRAGMA table_info('Students')";
+        await using var reader = await command.ExecuteReaderAsync();
+        var found = false;
+        while (await reader.ReadAsync())
+        {
+            if (string.Equals(reader.GetString(1), columnName, StringComparison.OrdinalIgnoreCase))
+            {
+                found = true;
+                break;
+            }
+        }
+
+        await reader.DisposeAsync();
+        if (!found)
+            await db.Database.ExecuteSqlRawAsync($"ALTER TABLE Students ADD COLUMN {columnName} {columnDefinition}");
+    }
+    finally
+    {
+        if (wasClosed)
+            await connection.CloseAsync();
+    }
+}
