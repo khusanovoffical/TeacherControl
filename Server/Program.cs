@@ -68,7 +68,7 @@ app.MapGet("/", () => Results.Ok(new
 
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", timeUtc = DateTimeOffset.UtcNow }));
 
-app.MapPost("/api/students/register", async (
+app.MapPost("/api/students/register", async Task<IResult> (
     StudentRegistrationRequest request,
     SchoolDbContext db,
     CancellationToken cancellationToken) =>
@@ -103,7 +103,7 @@ app.MapPost("/api/students/register", async (
 })
 .RequireRateLimiting("student-registration");
 
-app.MapGet("/api/teacher/students", async (
+app.MapGet("/api/teacher/students", async Task<IResult> (
     HttpContext context,
     SchoolDbContext db,
     CancellationToken cancellationToken) =>
@@ -120,7 +120,7 @@ app.MapGet("/api/teacher/students", async (
     return Results.Ok(students);
 });
 
-app.MapGet("/api/teacher/dashboard", async (
+app.MapGet("/api/teacher/dashboard", async Task<IResult> (
     HttpContext context,
     SchoolDbContext db,
     CancellationToken cancellationToken) =>
