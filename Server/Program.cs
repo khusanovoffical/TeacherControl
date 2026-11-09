@@ -190,11 +190,6 @@ static bool HasTeacherKey(HttpContext context, IConfiguration configuration)
         System.Text.Encoding.UTF8.GetBytes(supplied.ToString()));
 }
 
-public sealed record StudentRegistrationRequest(
-    string FirstName,
-    string LastName,
-    string? DeviceId = null,
-    string? DeviceName = null);
 
 static async Task EnsureColumnAsync(SchoolDbContext db, string columnName, string columnDefinition)
 {
@@ -228,3 +223,9 @@ static async Task EnsureColumnAsync(SchoolDbContext db, string columnName, strin
             await connection.CloseAsync();
     }
 }
+
+public sealed record StudentRegistrationRequest(
+    string FirstName,
+    string LastName,
+    string? DeviceId = null,
+    string? DeviceName = null);
