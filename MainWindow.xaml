@@ -8,7 +8,7 @@
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="18"/><RowDefinition Height="Auto"/><RowDefinition Height="18"/><RowDefinition Height="*"/></Grid.RowDefinitions>
         <DockPanel>
             <StackPanel DockPanel.Dock="Left">
-                <TextBlock Text="SCHOOL CONTROL" Foreground="#8FA7FF" FontSize="12" FontWeight="Bold" CharacterSpacing="180"/>
+                <TextBlock Text="SCHOOL CONTROL" Foreground="#8FA7FF" FontSize="12" FontWeight="Bold"/>
                 <TextBlock Text="TeacherControl" FontSize="30" FontWeight="SemiBold" Margin="0,5,0,0"/>
                 <TextBlock Text="O‘qituvchi boshqaruv paneli" Foreground="{StaticResource MutedBrush}" FontSize="14"/>
             </StackPanel>
