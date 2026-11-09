@@ -1,21 +1,32 @@
 # TeacherControl · xumo.dev
 
-Windows desktop application for authorized school staff.
+Windows 10/11 teacher desktop client for the SchoolControl school computer-lab platform.
 
-## Current foundation
-- .NET 8 WPF desktop shell with a responsive dark dashboard.
-- Student roster table, local name search, refresh action and explicit empty state.
-- No fabricated online counts, attendance records, or pretend remote-control buttons.
+## Current working features
+- Modern WPF teacher dashboard.
+- Loads registered student names from the SchoolControl Server.
+- Search by first name or surname.
+- Shows explicit server connection and error states.
+- Does not fabricate online or attendance values.
 
-## Planned connected features
-1. Authenticated school server and role-based teacher accounts.
-2. Student registration and device enrollment with clear on-screen notice.
-3. Live online/offline presence and attendance history.
-4. Teacher-to-student announcements and messaging.
-5. Permission-based classroom tools, with visible student notification and audit logs.
+## Configure
+Set these environment variables on the teacher PC before launching:
 
-## Privacy and safety
-Screen viewing, remote input, app restrictions, file collection and device power actions are **not** enabled in this starter. Any future classroom-management capability must be authorized by the school, visible to the student, limited to managed school devices, protected by role permissions, and recorded in an audit log. No hidden monitoring or tamper-resistant stealth installation.
+```powershell
+$env:SCHOOLCONTROL_API_URL = "http://SCHOOL-SERVER-IP:5080"
+$env:SCHOOLCONTROL_TEACHER_API_KEY = "the-same-secret-configured-on-server"
+dotnet run
+```
+
+The API key must be kept private and must never be committed to this repository. For production, replace the shared key with individual teacher accounts and role-based authentication.
 
 ## Build
-Open `TeacherControl.csproj` in Visual Studio 2022 with the .NET desktop development workload, then build and run.
+Open `TeacherControl.csproj` in Visual Studio 2022 with the .NET desktop development workload, or run:
+
+```powershell
+dotnet restore
+dotnet build -c Release
+```
+
+## Roadmap
+Live device presence, attendance events, class messaging, file distribution/collection and classroom screen sharing are separate modules. Screen sharing should be visible to the student, initiated for a specific class session, limited to school-managed PCs and logged. This repository does not implement hidden monitoring, stealth persistence, or covert remote control.
