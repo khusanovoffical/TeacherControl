@@ -1,105 +1,402 @@
 <Window x:Class="TeacherControl.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="TeacherControl · xumo.dev" Height="820" Width="1380"
-        MinHeight="700" MinWidth="1080" WindowStartupLocation="CenterScreen"
+        Title="SchoolControl · O‘qituvchi boshqaruv markazi"
+        Height="840" Width="1400" MinHeight="720" MinWidth="1100"
+        WindowStartupLocation="CenterScreen"
         Background="{StaticResource PageBrush}" Foreground="#F4F6FF">
-    <Window.Resources>
-        <Style x:Key="NavItem" TargetType="Button">
-            <Setter Property="Foreground" Value="#AAB7D4"/><Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/><Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="Padding" Value="15,13"/><Setter Property="Margin" Value="0,3"/>
-            <Setter Property="FontSize" Value="14"/><Setter Property="Cursor" Value="Hand"/>
-        </Style>
-        <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#1C2943"/><Setter Property="Foreground" Value="#AAB7D4"/>
-            <Setter Property="Padding" Value="14,13"/><Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-        </Style>
-        <Style TargetType="DataGridCell"><Setter Property="Padding" Value="12,10"/><Setter Property="BorderThickness" Value="0"/></Style>
-    </Window.Resources>
     <Grid>
-        <Grid.ColumnDefinitions><ColumnDefinition Width="248"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-        <Border Grid.Column="0" Background="#10182A" BorderBrush="#202D49" BorderThickness="0,0,1,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- CHAP PANEL: NAVIGATSIYA -->
+        <Border Grid.Column="0" Background="#0C1322" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0">
             <DockPanel Margin="18">
+                <!-- Yuqori brending -->
                 <StackPanel DockPanel.Dock="Top">
-                    <Border Width="44" Height="44" CornerRadius="14" Background="#263B70" HorizontalAlignment="Left">
-                        <TextBlock Text="SC" FontSize="17" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                    <TextBlock Text="SchoolControl" FontSize="20" FontWeight="Bold" Margin="0,13,0,2"/>
-                    <TextBlock Text="TEACHER WORKSPACE" FontSize="10" Foreground="#8494B7"/>
-                    <Border Height="1" Background="#26334E" Margin="0,24,0,18"/>
-                    <TextBlock Text="SINFXONA" Foreground="#7182A7" FontSize="10" FontWeight="Bold" Margin="12,0,0,8"/>
-                    <Button Style="{StaticResource NavItem}" Background="#202E4C" Foreground="White" Content="▦   Umumiy ko‘rinish"/>
-                    <Button Style="{StaticResource NavItem}" Content="♙   O‘quvchilar"/>
-                    <Button Style="{StaticResource NavItem}" Content="▣   Ekranlar"/>
-                    <Button Style="{StaticResource NavItem}" Content="⇧   Fayllar"/>
-                    <TextBlock Text="BOSHQARUV" Foreground="#7182A7" FontSize="10" FontWeight="Bold" Margin="12,22,0,8"/>
-                    <Button Style="{StaticResource NavItem}" Content="⌘   Qurilma boshqaruvi"/>
-                    <Button Style="{StaticResource NavItem}" Content="⚙   Sozlamalar"/>
+                    <StackPanel Orientation="Horizontal" Margin="4,4,0,18">
+                        <Border Width="42" Height="42" CornerRadius="12" Background="#1E3A8A">
+                            <TextBlock Text="SC" FontSize="17" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="SchoolControl" FontSize="18" FontWeight="Bold"/>
+                            <TextBlock Text="O‘QITUVCHI PANELI" FontSize="10" Foreground="{StaticResource CyanBrush}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,16"/>
+
+                    <TextBlock Text="ASOSIY MENYU" Foreground="#64748B" FontSize="11" FontWeight="Bold" Margin="8,0,0,8" LetterSpacing="1"/>
+
+                    <RadioButton Style="{StaticResource NavButtonStyle}" Content="▦   Umumiy ko‘rinish" IsChecked="True" Checked="Nav_Checked" Tag="Dashboard"/>
+                    <RadioButton Style="{StaticResource NavButtonStyle}" Content="▣   Ekranlarni ko‘rish (4×5)" Checked="Nav_Checked" Tag="Screens"/>
+                    <RadioButton Style="{StaticResource NavButtonStyle}" Content="⌘   Qurilmalar boshqaruvi" Checked="Nav_Checked" Tag="Devices"/>
+                    <RadioButton Style="{StaticResource NavButtonStyle}" Content="⇧   Fayllar almashinuvi" Checked="Nav_Checked" Tag="Files"/>
+                    <RadioButton Style="{StaticResource NavButtonStyle}" Content="🛡   Ilovalar siyosati" Checked="Nav_Checked" Tag="Policies"/>
+                    <RadioButton Style="{StaticResource NavButtonStyle}" Content="⚙   Server sozlamalari" Checked="Nav_Checked" Tag="Settings"/>
                 </StackPanel>
-                <Border DockPanel.Dock="Bottom" Background="#19243A" CornerRadius="14" Padding="13" Margin="0,16,0,0">
-                    <StackPanel><TextBlock Text="xumo.dev" Foreground="#8FA7FF" FontWeight="Bold"/>
-                        <TextBlock Text="SchoolControl platformasi" Foreground="#8998B7" FontSize="11" Margin="0,4,0,0"/></StackPanel>
+
+                <!-- Pastki Server Status paneli -->
+                <Border DockPanel.Dock="Bottom" Background="{StaticResource PanelBrush}" CornerRadius="14" Padding="14" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,6">
+                            <Ellipse x:Name="ServerStatusDot" Width="8" Height="8" Fill="{StaticResource WarningBrush}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="ServerStatusText" Text="Ulanmoqda..." Foreground="#E2E8F0" FontSize="12" FontWeight="SemiBold"/>
+                        </DockPanel>
+                        <TextBlock x:Name="ServerUrlLabel" Text="http://localhost:5123" Foreground="#64748B" FontSize="10" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
                 </Border>
             </DockPanel>
         </Border>
-        <Grid Grid.Column="1" Margin="30,25,30,24">
-            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="24"/><RowDefinition Height="Auto"/><RowDefinition Height="24"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-            <DockPanel>
-                <StackPanel><TextBlock Text="XUSH KELIBSIZ" Foreground="#8FA7FF" FontSize="11" FontWeight="Bold"/>
-                    <TextBlock Text="O‘qituvchi paneli" FontSize="29" FontWeight="SemiBold" Margin="0,5,0,0"/>
-                    <TextBlock Text="Maktabdagi o‘quvchilar va qurilmalar holatini boshqaring." Foreground="{StaticResource MutedBrush}" Margin="0,5,0,0"/></StackPanel>
-                <Border DockPanel.Dock="Right" Background="#2B2630" BorderBrush="#51412D" BorderThickness="1" CornerRadius="12" Padding="14,10" VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal"><Ellipse Width="8" Height="8" Fill="#F5B94C" Margin="0,0,9,0"/>
-                        <TextBlock Text="{Binding ServerStatus}" Foreground="#FFD98A" FontSize="12"/></StackPanel>
-                </Border>
-            </DockPanel>
-            <UniformGrid Grid.Row="2" Columns="3">
-                <Border Background="{StaticResource PanelBrush}" CornerRadius="18" Padding="20" Margin="0,0,12,0" BorderBrush="#263653" BorderThickness="1">
-                    <StackPanel><TextBlock Text="♙  O‘QUVCHILAR" Foreground="#9AA8C7" FontSize="11" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding StudentCount}" FontSize="34" FontWeight="Bold" Margin="0,12,0,2"/>
-                        <TextBlock Text="Serverdagi ro‘yxat" Foreground="#8494B7" FontSize="12"/></StackPanel>
-                </Border>
-                <Border Background="{StaticResource PanelBrush}" CornerRadius="18" Padding="20" Margin="6,0" BorderBrush="#263653" BorderThickness="1">
-                    <StackPanel><TextBlock Text="▣  QURILMALAR" Foreground="#9AA8C7" FontSize="11" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding RegisteredDeviceCount}" FontSize="34" FontWeight="Bold" Margin="0,12,0,2"/>
-                        <TextBlock Text="Ro‘yxatdan o‘tgan qurilmalar" Foreground="#8494B7" FontSize="12"/></StackPanel>
-                </Border>
-                <Border Background="{StaticResource PanelBrush}" CornerRadius="18" Padding="20" Margin="12,0,0,0" BorderBrush="#263653" BorderThickness="1">
-                    <StackPanel><TextBlock Text="▣  DARS BOSHQARUVI" Foreground="#9AA8C7" FontSize="11" FontWeight="Bold"/>
-                        <TextBlock Text="Tayyorlanmoqda" FontSize="34" FontWeight="Bold" Margin="0,12,0,2"/>
-                        <TextBlock Text="Sessiya boshqaruvi keyingi bosqichda" Foreground="#8494B7" FontSize="12"/></StackPanel>
-                </Border>
-            </UniformGrid>
-            <Border Grid.Row="4" Background="{StaticResource PanelBrush}" CornerRadius="20" Padding="22" BorderBrush="#263653" BorderThickness="1">
-                <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="18"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-                    <DockPanel><StackPanel><TextBlock Text="O‘quvchilar" FontSize="21" FontWeight="SemiBold"/>
-                        <TextBlock Text="Serverga ro‘yxatdan o‘tgan o‘quvchilar" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,5,0,0"/></StackPanel>
-                        <Button DockPanel.Dock="Right" Content="↻   Yangilash" Click="Refresh_Click" Padding="17,10" Background="#30477E" Foreground="White" BorderThickness="0" FontWeight="SemiBold"/></DockPanel>
-                    <TextBox Grid.Row="2" x:Name="SearchBox" Height="42" Padding="13,10" Background="#0D1426" Foreground="White" BorderBrush="#2B3857" TextChanged="SearchBox_TextChanged" ToolTip="Ism yoki familiya bo‘yicha qidirish"/>
-                    <Grid Grid.Row="3" Margin="0,16,0,0">
-                        <DataGrid x:Name="StudentsGrid" ItemsSource="{Binding Students}" AutoGenerateColumns="False" IsReadOnly="True"
-                                  Background="#111A2D" Foreground="#F4F6FF" BorderThickness="0" GridLinesVisibility="Horizontal"
-                                  HeadersVisibility="Column" RowBackground="#141F35" AlternatingRowBackground="#18243B">
+
+        <!-- O'NG PANEL: SAHIFALAR -->
+        <Grid Grid.Column="1" Margin="28,24">
+
+            <!-- 1. DASHBOARD SAHIFASI -->
+            <Grid x:Name="ViewDashboard" Visibility="Visible">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Sarlavha va Tezkor amallar -->
+                <DockPanel Grid.Row="0">
+                    <StackPanel>
+                        <TextBlock Text="XUSH KELIBSIZ" Foreground="{StaticResource AccentBrush}" FontSize="11" FontWeight="Bold" LetterSpacing="1"/>
+                        <TextBlock Text="O‘qituvchi Boshqaruv Markazi" FontSize="26" FontWeight="Bold" Margin="0,4,0,0"/>
+                        <TextBlock Text="20 ta o‘quvchi kompyuterining real-time monitoringi va boshqaruvi." Foreground="{StaticResource MutedBrush}" FontSize="13" Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <!-- Tezkor amallar tugmalari -->
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="🔒 Barchasini qulflash" Padding="14,10" Background="#991B1B" Foreground="White" BorderThickness="0"
+                                FontWeight="SemiBold" Cursor="Hand" Margin="0,0,10,0" Click="LockAll_Click"/>
+                        <Button Content="🔓 Barchasini ochish" Padding="14,10" Background="#065F46" Foreground="White" BorderThickness="0"
+                                FontWeight="SemiBold" Cursor="Hand" Margin="0,0,10,0" Click="UnlockAll_Click"/>
+                        <Button Content="↻ Yangilash" Padding="14,10" Background="{StaticResource CardBrush}" Foreground="#E2E8F0" BorderBrush="{StaticResource BorderBrush}"
+                                FontWeight="SemiBold" Cursor="Hand" Click="RefreshAll_Click"/>
+                    </StackPanel>
+                </DockPanel>
+
+                <!-- Holat Kartalari (Stats) -->
+                <UniformGrid Grid.Row="2" Columns="4">
+                    <!-- Jami qurilmalar -->
+                    <Border Background="{StaticResource PanelBrush}" CornerRadius="16" Padding="20" Margin="0,0,10,0" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="JAMI QURILMALAR" Foreground="{StaticResource MutedBrush}" FontSize="11" FontWeight="Bold"/>
+                            <TextBlock x:Name="StatTotalDevices" Text="0" FontSize="32" FontWeight="Bold" Margin="0,10,0,2"/>
+                            <TextBlock Text="Tizimga kiritilgan" Foreground="#64748B" FontSize="11"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Onlayn qurilmalar -->
+                    <Border Background="{StaticResource PanelBrush}" CornerRadius="16" Padding="20" Margin="5,0,5,0" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="HOZIR ONLAYN" Foreground="{StaticResource SuccessBrush}" FontSize="11" FontWeight="Bold"/>
+                            <TextBlock x:Name="StatOnlineDevices" Text="0" FontSize="32" FontWeight="Bold" Foreground="{StaticResource SuccessBrush}" Margin="0,10,0,2"/>
+                            <TextBlock Text="Darsda faol qatnashmoqda" Foreground="#64748B" FontSize="11"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Oflayn qurilmalar -->
+                    <Border Background="{StaticResource PanelBrush}" CornerRadius="16" Padding="20" Margin="5,0,5,0" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="OFLAYN" Foreground="{StaticResource WarningBrush}" FontSize="11" FontWeight="Bold"/>
+                            <TextBlock x:Name="StatOfflineDevices" Text="0" FontSize="32" FontWeight="Bold" Margin="0,10,0,2"/>
+                            <TextBlock Text="Aloqa mavjud emas" Foreground="#64748B" FontSize="11"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Qulflangan qurilmalar -->
+                    <Border Background="{StaticResource PanelBrush}" CornerRadius="16" Padding="20" Margin="10,0,0,0" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="QULFLANGAN" Foreground="{StaticResource DangerBrush}" FontSize="11" FontWeight="Bold"/>
+                            <TextBlock x:Name="StatLockedDevices" Text="0" FontSize="32" FontWeight="Bold" Margin="0,10,0,2"/>
+                            <TextBlock Text="Ekrani yopiq kompyuterlar" Foreground="#64748B" FontSize="11"/>
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+
+                <!-- Pastki Asosiy Jadval / Ko'rinish -->
+                <Border Grid.Row="4" Background="{StaticResource PanelBrush}" CornerRadius="18" Padding="22" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="14"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <DockPanel Grid.Row="0">
+                            <TextBlock Text="Onlayn o‘quvchilar ro‘yxati" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                            <TextBox x:Name="QuickSearchBox" DockPanel.Dock="Right" Width="260" Height="36" Padding="10,6"
+                                     Background="#020617" Foreground="White" BorderBrush="{StaticResource BorderBrush}"
+                                     ToolTip="Ism yoki kompyuter bo‘yicha qidirish" TextChanged="QuickSearch_TextChanged"/>
+                        </DockPanel>
+
+                        <DataGrid Grid.Row="2" x:Name="DashboardDataGrid" AutoGenerateColumns="False" IsReadOnly="True"
+                                  Background="Transparent" BorderThickness="0" HeadersVisibility="Column"
+                                  GridLinesVisibility="Horizontal" RowBackground="#0D1527" AlternatingRowBackground="#111B30"
+                                  Foreground="#F1F5F9">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="ISM" Binding="{Binding FirstName}" Width="*"/>
-                                <DataGridTextColumn Header="FAMILIYA" Binding="{Binding LastName}" Width="*"/>
-                                <DataGridTextColumn Header="QURILMA" Binding="{Binding DeviceName}" Width="*"/>
-                                <DataGridTextColumn Header="HOLAT" Binding="{Binding Status}" Width="130"/>
-                                <DataGridTextColumn Header="RO‘YXAT VAQTI" Binding="{Binding LastSeen}" Width="190"/>
+                                <DataGridTextColumn Header="KOMPYUTER" Binding="{Binding DeviceName}" Width="160"/>
+                                <DataGridTextColumn Header="O‘QUVCHI" Binding="{Binding StudentName}" Width="*"/>
+                                <DataGridTextColumn Header="IP MANZIL" Binding="{Binding IpAddress}" Width="140"/>
+                                <DataGridTextColumn Header="HOLATI" Binding="{Binding IsOnline, Converter={x:Null}}" Width="120"/>
+                                <DataGridTextColumn Header="QULFLANGAN" Binding="{Binding IsLocked}" Width="120"/>
+                                <DataGridTextColumn Header="OXIRGI ALOQA" Binding="{Binding LastSeen}" Width="140"/>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <Border Background="#111A2D" IsHitTestVisible="False" Visibility="{Binding EmptyStateVisibility}">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock Text="♙" FontSize="38" Foreground="#6C8CFF" HorizontalAlignment="Center"/>
-                                <TextBlock Text="Hozircha o‘quvchi ma’lumoti yo‘q" FontSize="17" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,12,0,0"/>
-                                <TextBlock Text="Student ilovasi serverga ulangach, ma’lumotlar shu yerda ko‘rinadi." Foreground="{StaticResource MutedBrush}" Margin="0,7,0,0" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
                     </Grid>
-                </Grid>
-            </Border>
+                </Border>
+            </Grid>
+
+            <!-- 2. EKRANLAR SAHIFASI (4x5 GRID) -->
+            <Grid x:Name="ViewScreens" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="16"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0">
+                    <StackPanel>
+                        <TextBlock Text="Jonli Ekranlar (4 × 5 Grid)" FontSize="22" FontWeight="Bold"/>
+                        <TextBlock Text="Kattalashtirish va boshqarish uchun istalgan ekranni bosing." Foreground="{StaticResource MutedBrush}" FontSize="12"/>
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="Barcha ekranlarni yangilash" Padding="14,8" Background="{StaticResource AccentBrush}" Foreground="White"
+                                BorderThickness="0" FontWeight="SemiBold" Cursor="Hand" Click="RefreshScreens_Click"/>
+                    </StackPanel>
+                </DockPanel>
+
+                <!-- 4x5 Ekranlar Ro'yxati -->
+                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="ScreensItemsControl">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="4"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource PanelBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                        CornerRadius="12" Margin="6" Padding="10" Cursor="Hand" MouseDown="ScreenCard_MouseDown">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="140"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Ekran Tasviri yoki Placeholder -->
+                                        <Border Grid.Row="0" Background="#020617" CornerRadius="8" ClipToBounds="True">
+                                            <Grid>
+                                                <Image Source="{Binding ScreenThumbnail}" Stretch="Uniform"/>
+                                                <!-- Agar rasm bo'lmasa -->
+                                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <TextBlock Text="🖥" FontSize="28" Foreground="#334155" HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="Kutilmoqda" Foreground="#475569" FontSize="11" Margin="0,4,0,0"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+
+                                        <!-- Karta Pasti (Device ma'lumotlari) -->
+                                        <DockPanel Grid.Row="1" Margin="0,8,0,0">
+                                            <Ellipse Width="8" Height="8" Fill="{StaticResource SuccessBrush}" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding DeviceName}" FontWeight="Bold" FontSize="12"/>
+                                                <TextBlock Text="{Binding StudentName}" Foreground="{StaticResource MutedBrush}" FontSize="10" TextTrimming="CharacterEllipsis"/>
+                                            </StackPanel>
+                                            <Button DockPanel.Dock="Right" Content="Kattalashtirish" Padding="8,4" Background="#1E293B" Foreground="#93C5FD"
+                                                    BorderThickness="0" FontSize="10" Cursor="Hand" Click="OpenScreen_Click"/>
+                                        </DockPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+
+            <!-- 3. QURILMALAR BOSHQARUVI SAHIFASI -->
+            <Grid x:Name="ViewDevices" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="16"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0">
+                    <StackPanel>
+                        <TextBlock Text="Qurilmalarni Boshqarish" FontSize="22" FontWeight="Bold"/>
+                        <TextBlock Text="Kerakli kompyuterlarni tanlang va markazlashtirilgan buyruq bering." Foreground="{StaticResource MutedBrush}" FontSize="12"/>
+                    </StackPanel>
+
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="Hammasini tanlash" Padding="10,8" Background="{StaticResource CardBrush}" Foreground="#E2E8F0" BorderBrush="{StaticResource BorderBrush}"
+                                Cursor="Hand" Margin="0,0,8,0" Click="SelectAllDevices_Click"/>
+                        <Button Content="Tanlovni bekor qilish" Padding="10,8" Background="{StaticResource CardBrush}" Foreground="#E2E8F0" BorderBrush="{StaticResource BorderBrush}"
+                                Cursor="Hand" Margin="0,0,16,0" Click="DeselectAllDevices_Click"/>
+
+                        <Button Content="🔒 Qulflash" Padding="12,8" Background="#991B1B" Foreground="White" BorderThickness="0"
+                                FontWeight="SemiBold" Cursor="Hand" Margin="0,0,8,0" Click="LockSelected_Click"/>
+                        <Button Content="🔓 Ochish" Padding="12,8" Background="#065F46" Foreground="White" BorderThickness="0"
+                                FontWeight="SemiBold" Cursor="Hand" Margin="0,0,8,0" Click="UnlockSelected_Click"/>
+                        <Button Content="🔄 Restart" Padding="12,8" Background="#854D0E" Foreground="White" BorderThickness="0"
+                                FontWeight="SemiBold" Cursor="Hand" Margin="0,0,8,0" Click="RestartSelected_Click"/>
+                        <Button Content="⏻ O‘chirish" Padding="12,8" Background="#7F1D1D" Foreground="White" BorderThickness="0"
+                                FontWeight="SemiBold" Cursor="Hand" Click="ShutdownSelected_Click"/>
+                    </StackPanel>
+                </DockPanel>
+
+                <!-- Qurilmalar jadvali -->
+                <Border Grid.Row="2" Background="{StaticResource PanelBrush}" CornerRadius="16" Padding="16" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                    <DataGrid x:Name="DevicesDataGrid" AutoGenerateColumns="False" Background="Transparent" BorderThickness="0"
+                              HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                              RowBackground="#0D1527" AlternatingRowBackground="#111B30" Foreground="#F1F5F9">
+                        <DataGrid.Columns>
+                            <DataGridCheckBoxColumn Header="TANLASH" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Width="70"/>
+                            <DataGridTextColumn Header="KOMPYUTER" Binding="{Binding DeviceName}" Width="160" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="O‘QUVCHI ISMI" Binding="{Binding StudentName}" Width="*" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="DEVICE ID" Binding="{Binding DeviceId}" Width="180" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="IP MANZIL" Binding="{Binding IpAddress}" Width="130" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="ONLAYN" Binding="{Binding IsOnline}" Width="90" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="QULFLANGAN" Binding="{Binding IsLocked}" Width="110" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </Grid>
+
+            <!-- 4. FAYLLAR ALMASHINUVI SAHIFASI -->
+            <Grid x:Name="ViewFiles" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="16"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0">
+                    <StackPanel>
+                        <TextBlock Text="Fayllar Almashinuvi" FontSize="22" FontWeight="Bold"/>
+                        <TextBlock Text="O‘quvchilarga topshiriq va materiallar yuboring yoki ularning topshiriqlarini yuklab oling." Foreground="{StaticResource MutedBrush}" FontSize="12"/>
+                    </StackPanel>
+
+                    <Button DockPanel.Dock="Right" Content="📁 Yangi fayl tarqatish" Padding="16,10"
+                            Background="{StaticResource AccentBrush}" Foreground="White" BorderThickness="0"
+                            FontWeight="SemiBold" Cursor="Hand" Click="SendFileToStudents_Click"/>
+                </DockPanel>
+
+                <!-- Fayllar ro'yxati -->
+                <Border Grid.Row="2" Background="{StaticResource PanelBrush}" CornerRadius="16" Padding="20" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                    <DataGrid x:Name="FilesDataGrid" AutoGenerateColumns="False" IsReadOnly="True"
+                              Background="Transparent" BorderThickness="0" HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal" RowBackground="#0D1527" AlternatingRowBackground="#111B30" Foreground="#F1F5F9">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="FAYL NOMI" Binding="{Binding FileName}" Width="*"/>
+                            <DataGridTextColumn Header="HAJMI" Binding="{Binding FormattedSize}" Width="110"/>
+                            <DataGridTextColumn Header="YUBORUVCHI" Binding="{Binding SenderName}" Width="160"/>
+                            <DataGridTextColumn Header="QABUL QILUVCHI" Binding="{Binding Target}" Width="130"/>
+                            <DataGridTextColumn Header="VAQTI" Binding="{Binding UploadedAt}" Width="160"/>
+                            <DataGridTemplateColumn Header="AMALLAR" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="Yuklab olish" Padding="8,4" Background="#2563EB" Foreground="White"
+                                                BorderThickness="0" FontSize="11" Cursor="Hand" Click="DownloadFile_Click" Tag="{Binding Id}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </Grid>
+
+            <!-- 5. ILOVALAR SIYOSATI (POLICY) SAHIFASI -->
+            <Grid x:Name="ViewPolicies" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="16"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0">
+                    <StackPanel>
+                        <TextBlock Text="Ilovalar va Jarayonlar Siyosati" FontSize="22" FontWeight="Bold"/>
+                        <TextBlock Text="Dars vaqtida o‘quvchilar kompyuterida taqiqlangan o‘yinlar va dasturlar ro‘yxati." Foreground="{StaticResource MutedBrush}" FontSize="12"/>
+                    </StackPanel>
+
+                    <Button DockPanel.Dock="Right" Content="💾 Barcha kompyuterlarga qo‘llash" Padding="16,10"
+                            Background="{StaticResource AccentBrush}" Foreground="White" BorderThickness="0"
+                            FontWeight="SemiBold" Cursor="Hand" Click="SavePolicies_Click"/>
+                </DockPanel>
+
+                <Border Grid.Row="2" Background="{StaticResource PanelBrush}" CornerRadius="16" Padding="24" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="16"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Qo'shish maydoni -->
+                        <DockPanel Grid.Row="0">
+                            <TextBox x:Name="NewProcessNameBox" Height="42" Padding="12,8" Background="#020617" Foreground="White" BorderBrush="{StaticResource BorderBrush}"
+                                     ToolTip="Masalan: discord.exe yoki roblox.exe"/>
+                            <Button DockPanel.Dock="Right" Content="Ro‘yxatga qo‘shish" Margin="10,0,0,0" Padding="16,0"
+                                    Background="{StaticResource CardBrush}" Foreground="#E2E8F0" BorderBrush="{StaticResource BorderBrush}"
+                                    Cursor="Hand" Click="AddBlockedProcess_Click"/>
+                        </DockPanel>
+
+                        <!-- Bloklanganlar ro'yxati -->
+                        <ListBox Grid.Row="2" x:Name="BlockedProcessesListBox" Background="#020617" BorderBrush="{StaticResource BorderBrush}" Foreground="#F1F5F9">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <DockPanel Padding="8,6">
+                                        <Button DockPanel.Dock="Right" Content="O‘chirish" Padding="10,4" Background="#7F1D1D" Foreground="#FCA5A5" BorderThickness="0"
+                                                FontSize="11" Cursor="Hand" Click="RemoveBlockedProcess_Click" Tag="{Binding}"/>
+                                        <TextBlock Text="{Binding}" FontSize="13" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- 6. SERVER VA UMUMIY SOZLAMALAR -->
+            <Grid x:Name="ViewSettings" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="16"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="Server va Tizim Sozlamalari" FontSize="22" FontWeight="Bold"/>
+                    <TextBlock Text="Lokal yoki bulutli server aloqasi parametrlarini sozlang." Foreground="{StaticResource MutedBrush}" FontSize="12"/>
+                </StackPanel>
+
+                <Border Grid.Row="2" Background="{StaticResource PanelBrush}" CornerRadius="16" Padding="28" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" MaxWidth="600" HorizontalAlignment="Left">
+                    <StackPanel>
+                        <TextBlock Text="SERVER MANZILI (URL)" Foreground="{StaticResource AccentBrush}" FontSize="11" FontWeight="Bold" LetterSpacing="1" Margin="0,0,0,6"/>
+                        <TextBox x:Name="SettingsServerUrlBox" Height="44" Padding="12,10" Background="#020617" Foreground="#93C5FD" BorderBrush="{StaticResource BorderBrush}"
+                                 Text="http://localhost:5123"/>
+                        <TextBlock Text="Lokal kompyuterda ishlayotgan bo‘lsa: http://localhost:5123 yoki o‘qituvchi lokal IP si." Foreground="#64748B" FontSize="11" Margin="0,4,0,18"/>
+
+                        <TextBlock Text="O‘QITUVCHI MAXFIY KALITI (API KEY)" Foreground="{StaticResource AccentBrush}" FontSize="11" FontWeight="Bold" LetterSpacing="1" Margin="0,0,0,6"/>
+                        <TextBox x:Name="SettingsApiKeyBox" Height="44" Padding="12,10" Background="#020617" Foreground="White" BorderBrush="{StaticResource BorderBrush}"
+                                 Text="school_teacher_secret_2026"/>
+                        <TextBlock Text="Server ruxsatini tasdiqlash uchun xavfsiz kalit." Foreground="#64748B" FontSize="11" Margin="0,4,0,24"/>
+
+                        <Button Content="Sozlamalarni saqlash va qayta ulanish" Height="46" Background="{StaticResource AccentBrush}" Foreground="White"
+                                BorderThickness="0" FontWeight="SemiBold" FontSize="14" Cursor="Hand" Click="SaveSettings_Click"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
         </Grid>
     </Grid>
 </Window>

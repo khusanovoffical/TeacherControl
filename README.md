@@ -1,53 +1,62 @@
-# TeacherControl · xumo.dev
+# SchoolControl · TeacherControl & Server
 
-Windows 10/11 teacher desktop client and ASP.NET Core API for the SchoolControl school computer-lab platform.
+Professional maktab kompyuterlarini boshqarish ekotizimi — O‘qituvchi boshqaruv markazi va Central API Serveri.
 
-## Current working foundation
-- Modern WPF teacher dashboard with student and registered-device list.
-- Search by student name, surname, and Windows device name.
-- API registration stores a stable device ID and Windows computer name.
-- Repeated launches from the same configured Student installation update its existing record instead of creating a new student row.
-- Existing SQLite databases are upgraded with missing device columns at API startup.
-- Explicit server connection and error states.
-- No attendance tracking or messaging features.
+Ushbu tizim 1 ta o‘qituvchi kompyuteri va 20 ta o‘quvchi kompyuterini yagona Ethernet lokal tarmog‘ida (internet bo‘lmagan taqdirda ham) to‘liq boshqarish, ekranlarni kuzatish, qulflash, fayllar tarqatish va ilovalar nazoratini amalga oshirish uchun mo‘ljallangan.
 
-## Configure the teacher PC
-Set these environment variables before launching:
+---
 
+## Asosiy Imkoniyatlar
+
+1. **Dashboard & Statistika:**
+   - Jami qurilmalar, onlayn, oflayn va qulflangan kompyuterlar soni.
+   - Tezkor qidiruv va server aloqasi holati.
+2. **Jonli Ekranlar (4 × 5 Grid):**
+   - Barcha 20 ta kompyuterning jonli ekranlarini bitta sahifada ko‘rish.
+   - Har bir kartani bosganda alohida katta oynada ochish, Fullscreen rejimi.
+   - **Masofaviy Boshqaruv (Remote Control):** O‘quvchi ruxsati va ko‘rinadigan sessiya doirasida sichqoncha va klaviatura bilan boshqarish.
+3. **Qurilmalarni Boshqarish:**
+   - Bir yoki bir nechta kompyuterni tanlash (Multi-select).
+   - Qulflash (Lock) va Qulfdan chiqarish (Unlock).
+   - Qayta ishga tushirish (Restart) va O‘chirish (Shutdown) — tasdiqlash dialogi bilan.
+4. **Fayllar Almashinuvi:**
+   - Barcha yoki tanlangan o‘quvchilarga topshiriq va materiallarni tarqatish.
+   - O‘quvchilar yuborgan fayllarni qabul qilish va yuklab olish.
+5. **Ilovalar Siyosati (Policy Enforcer):**
+   - Dars paytida taqiqlangan dasturlarni (o‘yinlar, messenjerlar) bloklash va ularni darhol barcha kompyuterlarga qo‘llash.
+6. **Zero-Configuration Lokal Server:**
+   - O‘qituvchi kompyuterida server ishga tushishi bilan UDP Beacon tarqatiladi va o‘quvchi kompyuterlari serverni avtomatik topadi. Internet shart emas!
+
+---
+
+## Ishga Tushirish
+
+### 1. Serverni ishga tushirish:
 ```powershell
-$env:SCHOOLCONTROL_API_URL = "http://SCHOOL-SERVER-IP:5080"
-$env:SCHOOLCONTROL_TEACHER_API_KEY = "your-private-development-key"
+dotnet run --project Server/SchoolControl.Server.csproj --urls "http://0.0.0.0:5123"
+```
+
+### 2. O‘qituvchi dasturini ishga tushirish:
+```powershell
 dotnet run --project TeacherControl.csproj
 ```
 
-The API key must remain private and must never be committed. For production, replace the shared development key with individual teacher accounts, role-based permissions, HTTPS and secure secret storage.
+---
 
-## Run the API
-From the repository root:
+## Build va Publish
 
+GitHub Actions orqali avtomatik ravishda Windows x64 uchun mustaqil (Self-Contained) `.exe` fayllar generatsiya qilinadi.
+
+Qo‘lda build qilish uchun:
 ```powershell
-$env:SCHOOLCONTROL_TEACHER_API_KEY = "your-private-development-key"
-dotnet run --project Server/SchoolControl.Server.csproj --urls "http://0.0.0.0:5080"
+dotnet publish TeacherControl.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+dotnet publish Server/SchoolControl.Server.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
 ```
 
-Student PCs must be configured by authorized school IT staff to use the server address. Do not use localhost on student PCs unless the API is running on that same PC.
+---
 
-## Build
-Open `TeacherControl.csproj` in Visual Studio 2022 with the .NET desktop development workload, or run:
+## Xavfsizlik va Maxfiylik
 
-```powershell
-dotnet restore TeacherControl.csproj
-dotnet build TeacherControl.csproj -c Release
-dotnet build Server/SchoolControl.Server.csproj -c Release
-```
-
-A GitHub Actions workflow builds the teacher app and API on Windows for each push and pull request.
-
-## Next implementation stages
-1. Teacher/admin authentication and device enrollment approval.
-2. Authorized classroom sessions with visible student-side indicators.
-3. Session-scoped screen previews and teacher screen broadcast.
-4. Managed file distribution and collection.
-5. Authorized lock, restart/shutdown and application allow/block policies with audit records.
-
-All remote controls must be limited to school-managed PCs, authorized teacher/admin roles and a clearly identified class session. Screen viewing/sharing must be visible to students and governed by the school's disclosed policy. No hidden monitoring, stealth persistence or covert remote control is implemented. Attendance and messaging are out of scope.
+- Barcha ekran kuzatuvlari o‘quvchi kompyuterida aniq ko‘rinib turuvchi yashil indikator ostida amalga oshiriladi.
+- Yashirin josuslik, yashirin screenshot yoki yashirin boshqaruv mexanizmlari mavjud emas.
+- Maktab tarmog‘ida xavfsiz va barqaror ishlash uchun optimallashtirilgan.

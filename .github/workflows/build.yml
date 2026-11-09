@@ -1,23 +1,50 @@
-name: Build Windows apps and API
+name: Build and Package TeacherControl Ecosystem
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Setup .NET 8
+
+      - name: Setup .NET 8 SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
+
+      - name: Restore TeacherControl
+        run: dotnet restore TeacherControl.csproj
+
+      - name: Restore Server
+        run: dotnet restore Server/SchoolControl.Server.csproj
+
       - name: Build TeacherControl
-        run: dotnet build TeacherControl.csproj --configuration Release
+        run: dotnet build TeacherControl.csproj --configuration Release --no-restore
+
       - name: Build SchoolControl API
-        run: dotnet build Server/SchoolControl.Server.csproj --configuration Release
+        run: dotnet build Server/SchoolControl.Server.csproj --configuration Release --no-restore
+
+      - name: Publish TeacherControl Executable
+        run: dotnet publish TeacherControl.csproj --configuration Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ./publish/teacher
+
+      - name: Publish Server Executable
+        run: dotnet publish Server/SchoolControl.Server.csproj --configuration Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ./publish/server
+
+      - name: Upload TeacherControl Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TeacherControl-Win-x64
+          path: ./publish/teacher/*
+
+      - name: Upload Server Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SchoolControl-Server-Win-x64
+          path: ./publish/server/*
