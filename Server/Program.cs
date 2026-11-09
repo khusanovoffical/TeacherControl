@@ -1,6 +1,7 @@
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using SchoolControl.Server.Data;
 using SchoolControl.Server.Models;
 
@@ -47,6 +48,35 @@ await using (var scope = app.Services.CreateAsyncScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<SchoolDbContext>();
     await db.Database.EnsureCreatedAsync();
+
+    // EnsureCreated does not update an existing SQLite database. Add the new
+    // nullable/defaulted device columns safely for installations from earlier commits.
+    await db.Database.ExecuteSqlRawAsync(
+        "ALTER TABLE Students ADD COLUMN DeviceId TEXT NOT NULL DEFAULT '';")
+        .ContinueWith(async task =>
+        {
+            if (task.IsFaulted && !task.Exception!.GetBaseException().Message.Contains("duplicate column", StringComparison.OrdinalIgnoreCase))
+                throw task.Exception.GetBaseException();
+            await Task.CompletedTask;
+        }).Unwrap();
+
+    await db.Database.ExecuteSqlRawAsync(
+        "ALTER TABLE Students ADD COLUMN DeviceName TEXT NOT NULL DEFAULT '';")
+        .ContinueWith(async task =>
+        {
+            if (task.IsFaulted && !task.Exception!.GetBaseException().Message.Contains("duplicate column", StringComparison.OrdinalIgnoreCase))
+                throw task.Exception.GetBaseException();
+            await Task.CompletedTask;
+        }).Unwrap();
+
+    await db.Database.ExecuteSqlRawAsync(
+        "ALTER TABLE Students ADD COLUMN LastSeenUtc TEXT NULL;")
+        .ContinueWith(async task =>
+        {
+            if (task.IsFaulted && !task.Exception!.GetBaseException().Message.Contains("duplicate column", StringComparison.OrdinalIgnoreCase))
+                throw task.Exception.GetBaseException();
+            await Task.CompletedTask;
+        }).Unwrap();
 }
 
 app.UseCors("SchoolApps");
@@ -61,7 +91,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => Results.Ok(new
 {
     name = "SchoolControl API",
-    version = "0.1.0",
+    version = "0.2.0",
     status = "running",
     docs = app.Environment.IsDevelopment() ? "/swagger" : null
 }));
@@ -73,8 +103,10 @@ app.MapPost("/api/students/register", async Task<IResult> (
     SchoolDbContext db,
     CancellationToken cancellationToken) =>
 {
-    var firstName = request.FirstName.Trim();
-    var lastName = request.LastName.Trim();
+    var firstName = request.FirstName?.Trim() ?? "";
+    var lastName = request.LastName?.Trim() ?? "";
+    var deviceId = request.DeviceId?.Trim() ?? "";
+    var deviceName = request.DeviceName?.Trim() ?? "";
 
     if (firstName.Length is < 1 or > 60 || lastName.Length is < 1 or > 60)
         return Results.ValidationProblem(new Dictionary<string, string[]>
@@ -82,23 +114,44 @@ app.MapPost("/api/students/register", async Task<IResult> (
             ["name"] = ["Ism va familiya 1–60 belgi oralig‘ida bo‘lishi kerak."]
         });
 
-    var student = new StudentProfile
-    {
-        Id = Guid.NewGuid(),
-        FirstName = firstName,
-        LastName = lastName,
-        CreatedAtUtc = DateTimeOffset.UtcNow
-    };
+    if (deviceId.Length > 80 || deviceName.Length > 120)
+        return Results.ValidationProblem(new Dictionary<string, string[]>
+        {
+            ["device"] = ["Qurilma identifikatori yoki nomi juda uzun."]
+        });
 
-    db.Students.Add(student);
+    var now = DateTimeOffset.UtcNow;
+    StudentProfile? student = null;
+
+    if (!string.IsNullOrWhiteSpace(deviceId))
+        student = await db.Students.FirstOrDefaultAsync(s => s.DeviceId == deviceId, cancellationToken);
+
+    if (student is null)
+    {
+        student = new StudentProfile
+        {
+            Id = Guid.NewGuid(),
+            CreatedAtUtc = now
+        };
+        db.Students.Add(student);
+    }
+
+    student.FirstName = firstName;
+    student.LastName = lastName;
+    student.DeviceId = deviceId;
+    student.DeviceName = deviceName;
+    student.LastSeenUtc = now;
+
     await db.SaveChangesAsync(cancellationToken);
 
-    return Results.Created($"/api/students/{student.Id}", new
+    return Results.Ok(new
     {
         student.Id,
         student.FirstName,
         student.LastName,
-        student.CreatedAtUtc
+        student.DeviceName,
+        student.CreatedAtUtc,
+        student.LastSeenUtc
     });
 })
 .RequireRateLimiting("student-registration");
@@ -113,8 +166,17 @@ app.MapGet("/api/teacher/students", async Task<IResult> (
 
     var students = await db.Students
         .AsNoTracking()
-        .OrderByDescending(s => s.CreatedAtUtc)
-        .Select(s => new { s.Id, s.FirstName, s.LastName, s.CreatedAtUtc })
+        .OrderBy(s => s.LastName)
+        .ThenBy(s => s.FirstName)
+        .Select(s => new
+        {
+            s.Id,
+            s.FirstName,
+            s.LastName,
+            s.DeviceName,
+            s.CreatedAtUtc,
+            s.LastSeenUtc
+        })
         .ToListAsync(cancellationToken);
 
     return Results.Ok(students);
@@ -132,9 +194,8 @@ app.MapGet("/api/teacher/dashboard", async Task<IResult> (
     return Results.Ok(new
     {
         totalStudents = total,
-        onlineStudents = (int?)null,
-        todayCheckIns = (int?)null,
-        note = "Onlayn holati va davomat modullari keyingi bosqichda ulanadi."
+        registeredDevices = await db.Students.CountAsync(s => s.DeviceId != "", cancellationToken),
+        note = "Faqat ro‘yxat va qurilma identifikatori ko‘rsatiladi; davomat kuzatilmaydi."
     });
 });
 
@@ -154,4 +215,8 @@ static bool HasTeacherKey(HttpContext context, IConfiguration configuration)
         System.Text.Encoding.UTF8.GetBytes(supplied.ToString()));
 }
 
-public sealed record StudentRegistrationRequest(string FirstName, string LastName);
+public sealed record StudentRegistrationRequest(
+    string FirstName,
+    string LastName,
+    string? DeviceId = null,
+    string? DeviceName = null);
