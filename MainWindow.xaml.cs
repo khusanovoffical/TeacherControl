@@ -1,5 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,46 +10,104 @@ namespace TeacherControl;
 
 public partial class MainWindow : Window, INotifyPropertyChanged
 {
+    private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(8) };
+    private string _serverStatus = "Server sozlanmagan";
+    private string _todayCount = "—";
+
     public ObservableCollection<StudentRow> Students { get; } = new();
     public int StudentCount => Students.Count;
     public int OnlineCount => Students.Count(s => s.Status == "Onlayn");
-    public int TodayCount => 0;
+    public string TodayCount { get => _todayCount; private set { _todayCount = value; OnPropertyChanged(); } }
+    public string ServerStatus { get => _serverStatus; private set { _serverStatus = value; OnPropertyChanged(); } }
     public Visibility EmptyStateVisibility => Students.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
     public MainWindow()
     {
         InitializeComponent();
         DataContext = this;
-        RefreshLocalView();
+        Loaded += async (_, _) => await RefreshFromServerAsync();
     }
 
-    private void Refresh_Click(object sender, RoutedEventArgs e) => RefreshLocalView();
+    private async void Refresh_Click(object sender, RoutedEventArgs e) => await RefreshFromServerAsync();
 
-    private void RefreshLocalView()
+    private async Task RefreshFromServerAsync()
     {
-        // Until the authenticated school server is configured, do not invent device or attendance data.
-        OnPropertyChanged(nameof(StudentCount));
-        OnPropertyChanged(nameof(OnlineCount));
-        OnPropertyChanged(nameof(TodayCount));
-        OnPropertyChanged(nameof(EmptyStateVisibility));
-        StudentsGrid.Items.Refresh();
-    }
+        var baseUrl = Environment.GetEnvironmentVariable("SCHOOLCONTROL_API_URL")?.TrimEnd('/');
+        var teacherKey = Environment.GetEnvironmentVariable("SCHOOLCONTROL_TEACHER_API_KEY");
 
-    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        var query = SearchBox.Text.Trim();
-        if (string.IsNullOrWhiteSpace(query))
+        if (string.IsNullOrWhiteSpace(baseUrl) || string.IsNullOrWhiteSpace(teacherKey))
         {
-            StudentsGrid.Items.Filter = null;
+            ServerStatus = "Server sozlamasi kerak";
+            TodayCount = "—";
             return;
         }
-        StudentsGrid.Items.Filter = item => item is StudentRow row &&
-            ($"{row.FirstName} {row.LastName}".Contains(query, StringComparison.CurrentCultureIgnoreCase));
+
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, $"{baseUrl}/api/teacher/students");
+            request.Headers.Add("X-Teacher-Key", teacherKey);
+            using var response = await Http.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+            {
+                ServerStatus = response.StatusCode == System.Net.HttpStatusCode.Unauthorized
+                    ? "Teacher kaliti noto‘g‘ri" : $"Server: {(int)response.StatusCode}";
+                return;
+            }
+
+            var rows = await response.Content.ReadFromJsonAsync<List<StudentApiRow>>() ?? [];
+            Students.Clear();
+            foreach (var row in rows)
+                Students.Add(new StudentRow
+                {
+                    FirstName = row.FirstName,
+                    LastName = row.LastName,
+                    DeviceName = "Ro‘yxatdan o‘tgan",
+                    Status = "Holat noma’lum",
+                    LastSeen = row.CreatedAtUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                });
+
+            ServerStatus = "Server ulangan";
+            OnPropertyChanged(nameof(StudentCount));
+            OnPropertyChanged(nameof(OnlineCount));
+            OnPropertyChanged(nameof(EmptyStateVisibility));
+            ApplySearch();
+            TodayCount = "—";
+        }
+        catch (HttpRequestException)
+        {
+            ServerStatus = "Serverga ulanib bo‘lmadi";
+        }
+        catch (TaskCanceledException)
+        {
+            ServerStatus = "Server javobi kechikdi";
+        }
+        catch (Exception)
+        {
+            ServerStatus = "Ma’lumotni yuklashda xatolik";
+        }
+    }
+
+    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e) => ApplySearch();
+
+    private void ApplySearch()
+    {
+        if (StudentsGrid is null || SearchBox is null) return;
+        var query = SearchBox.Text.Trim();
+        StudentsGrid.Items.Filter = string.IsNullOrWhiteSpace(query) ? null :
+            item => item is StudentRow row &&
+                ($"{row.FirstName} {row.LastName}".Contains(query, StringComparison.CurrentCultureIgnoreCase));
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string? name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+}
+
+public sealed class StudentApiRow
+{
+    public string FirstName { get; set; } = "";
+    public string LastName { get; set; } = "";
+    public DateTimeOffset CreatedAtUtc { get; set; }
 }
 
 public sealed class StudentRow
