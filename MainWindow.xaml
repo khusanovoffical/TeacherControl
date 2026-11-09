@@ -34,8 +34,6 @@
                     <Button Style="{StaticResource NavItem}" Content="♙   O‘quvchilar"/>
                     <Button Style="{StaticResource NavItem}" Content="▣   Ekranlar"/>
                     <Button Style="{StaticResource NavItem}" Content="⇧   Fayllar"/>
-                    <Button Style="{StaticResource NavItem}" Content="◷   Davomat"/>
-                    <Button Style="{StaticResource NavItem}" Content="▤   Xabarlar"/>
                     <TextBlock Text="BOSHQARUV" Foreground="#7182A7" FontSize="10" FontWeight="Bold" Margin="12,22,0,8"/>
                     <Button Style="{StaticResource NavItem}" Content="⌘   Qurilma boshqaruvi"/>
                     <Button Style="{StaticResource NavItem}" Content="⚙   Sozlamalar"/>
@@ -64,14 +62,14 @@
                         <TextBlock Text="Serverdagi ro‘yxat" Foreground="#8494B7" FontSize="12"/></StackPanel>
                 </Border>
                 <Border Background="{StaticResource PanelBrush}" CornerRadius="18" Padding="20" Margin="6,0" BorderBrush="#263653" BorderThickness="1">
-                    <StackPanel><TextBlock Text="●  ONLAYN" Foreground="#9AA8C7" FontSize="11" FontWeight="Bold"/>
+                    <StackPanel><TextBlock Text="▣  QURILMALAR" Foreground="#9AA8C7" FontSize="11" FontWeight="Bold"/>
                         <TextBlock Text="—" FontSize="34" FontWeight="Bold" Margin="0,12,0,2"/>
-                        <TextBlock Text="Presence moduli hali ulanmagan" Foreground="#8494B7" FontSize="12"/></StackPanel>
+                        <TextBlock Text="Ro‘yxatdan o‘tgan qurilmalar" Foreground="#8494B7" FontSize="12"/></StackPanel>
                 </Border>
                 <Border Background="{StaticResource PanelBrush}" CornerRadius="18" Padding="20" Margin="12,0,0,0" BorderBrush="#263653" BorderThickness="1">
-                    <StackPanel><TextBlock Text="◷  DAVOMAT" Foreground="#9AA8C7" FontSize="11" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding TodayCount}" FontSize="34" FontWeight="Bold" Margin="0,12,0,2"/>
-                        <TextBlock Text="Davomat moduli hali ulanmagan" Foreground="#8494B7" FontSize="12"/></StackPanel>
+                    <StackPanel><TextBlock Text="▣  DARS BOSHQARUVI" Foreground="#9AA8C7" FontSize="11" FontWeight="Bold"/>
+                        <TextBlock Text="Tayyorlanmoqda" FontSize="34" FontWeight="Bold" Margin="0,12,0,2"/>
+                        <TextBlock Text="Sessiya boshqaruvi keyingi bosqichda" Foreground="#8494B7" FontSize="12"/></StackPanel>
                 </Border>
             </UniformGrid>
             <Border Grid.Row="4" Background="{StaticResource PanelBrush}" CornerRadius="20" Padding="22" BorderBrush="#263653" BorderThickness="1">
