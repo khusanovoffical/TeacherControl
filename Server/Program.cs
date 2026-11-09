@@ -95,11 +95,23 @@ app.MapPost("/api/students/register", async Task<IResult> (
             ["device"] = ["Qurilma identifikatori yoki nomi juda uzun."]
         });
 
-    var now = DateTimeOffset.UtcNow;
-    StudentProfile? student = null;
+    // A device registration must always carry its persistent installation ID.
+    // Rejecting an empty/invalid ID prevents accidental duplicate student rows.
+    if (!Guid.TryParseExact(deviceId, "N", out _))
+        return Results.ValidationProblem(new Dictionary<string, string[]>
+        {
+            ["deviceId"] = ["Qurilma identifikatori noto‘g‘ri. Student dasturini qayta sozlang."]
+        });
 
-    if (!string.IsNullOrWhiteSpace(deviceId))
-        student = await db.Students.FirstOrDefaultAsync(s => s.DeviceId == deviceId, cancellationToken);
+    if (deviceName.Length is < 1)
+        return Results.ValidationProblem(new Dictionary<string, string[]>
+        {
+            ["deviceName"] = ["Kompyuter nomi yuborilishi kerak."]
+        });
+
+    var now = DateTimeOffset.UtcNow;
+    StudentProfile? student = await db.Students
+        .FirstOrDefaultAsync(s => s.DeviceId == deviceId, cancellationToken);
 
     if (student is null)
     {
@@ -189,7 +201,6 @@ static bool HasTeacherKey(HttpContext context, IConfiguration configuration)
         System.Text.Encoding.UTF8.GetBytes(expected),
         System.Text.Encoding.UTF8.GetBytes(supplied.ToString()));
 }
-
 
 static async Task EnsureColumnAsync(SchoolDbContext db, string columnName, string columnDefinition)
 {
