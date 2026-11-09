@@ -7,7 +7,9 @@ Windows 10/11 teacher desktop client for the SchoolControl school computer-lab p
 - Loads registered student names from the SchoolControl Server.
 - Search by first name or surname.
 - Shows explicit server connection and error states.
-- Does not fabricate online or attendance values.
+- Does not fabricate online/device status.
+- Teacher navigation is organized around students, screens, files and managed device controls.
+- Attendance tracking and messaging are intentionally excluded from the product scope.
 
 ## Configure
 Set these environment variables on the teacher PC before launching:
@@ -29,4 +31,4 @@ dotnet build -c Release
 ```
 
 ## Roadmap
-Live device presence, attendance events, class messaging, file distribution/collection and classroom screen sharing are separate modules. Screen sharing should be visible to the student, initiated for a specific class session, limited to school-managed PCs and logged. This repository does not implement hidden monitoring, stealth persistence, or covert remote control.
+Next implementation stages: authenticated classroom sessions; visible, session-scoped screen previews and teacher screen broadcast; file distribution and collection; and authorized device administration (lock, restart/shutdown, and app allow/block policies). These controls must be restricted to school-managed PCs, protected by teacher/admin permissions, and recorded in an audit log. Screen viewing/sharing must show a clear student-side indicator and follow the school's disclosed policy. Attendance tracking and messaging are out of scope. No hidden monitoring, stealth persistence, or covert remote control is implemented.
