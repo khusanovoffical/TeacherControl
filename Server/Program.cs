@@ -1,7 +1,6 @@
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using System.Data.Common;
 using SchoolControl.Server.Data;
 using SchoolControl.Server.Models;
 
