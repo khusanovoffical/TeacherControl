@@ -6,43 +6,31 @@
         Background="{StaticResource PageBrush}" Foreground="#F4F6FF">
     <Window.Resources>
         <Style x:Key="NavItem" TargetType="Button">
-            <Setter Property="Foreground" Value="#AAB7D4"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="Padding" Value="15,13"/>
-            <Setter Property="Margin" Value="0,3"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="#AAB7D4"/><Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/><Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="15,13"/><Setter Property="Margin" Value="0,3"/>
+            <Setter Property="FontSize" Value="14"/><Setter Property="Cursor" Value="Hand"/>
         </Style>
         <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#1C2943"/>
-            <Setter Property="Foreground" Value="#AAB7D4"/>
-            <Setter Property="Padding" Value="14,13"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="#1C2943"/><Setter Property="Foreground" Value="#AAB7D4"/>
+            <Setter Property="Padding" Value="14,13"/><Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
-        <Style TargetType="DataGridCell">
-            <Setter Property="Padding" Value="12,10"/>
-            <Setter Property="BorderThickness" Value="0"/>
-        </Style>
+        <Style TargetType="DataGridCell"><Setter Property="Padding" Value="12,10"/><Setter Property="BorderThickness" Value="0"/></Style>
     </Window.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="248"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions><ColumnDefinition Width="248"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
         <Border Grid.Column="0" Background="#10182A" BorderBrush="#202D49" BorderThickness="0,0,1,0">
             <DockPanel Margin="18">
                 <StackPanel DockPanel.Dock="Top">
                     <Border Width="44" Height="44" CornerRadius="14" Background="#263B70" HorizontalAlignment="Left">
-                        <TextBlock Text="SC" FontSize="17" FontWeight="Bold" Foreground="#FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="SC" FontSize="17" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <TextBlock Text="SchoolControl" FontSize="20" FontWeight="Bold" Margin="0,13,0,2"/>
-                    <TextBlock Text="TEACHER WORKSPACE" FontSize="10" Foreground="#8494B7" CharacterSpacing="90"/>
+                    <TextBlock Text="TEACHER WORKSPACE" FontSize="10" Foreground="#8494B7"/>
                     <Border Height="1" Background="#26334E" Margin="0,24,0,18"/>
                     <TextBlock Text="ASOSIY" Foreground="#7182A7" FontSize="10" FontWeight="Bold" Margin="12,0,0,8"/>
-                    <Button Style="{StaticResource NavItem}" Background="#202E4C" Foreground="#FFFFFF" Content="▦   Umumiy ko‘rinish"/>
+                    <Button Style="{StaticResource NavItem}" Background="#202E4C" Foreground="White" Content="▦   Umumiy ko‘rinish"/>
                     <Button Style="{StaticResource NavItem}" Content="♙   O‘quvchilar"/>
                     <Button Style="{StaticResource NavItem}" Content="◷   Davomat"/>
                     <Button Style="{StaticResource NavItem}" Content="▤   Xabarlar"/>
@@ -51,67 +39,44 @@
                     <Button Style="{StaticResource NavItem}" Content="⚙   Sozlamalar"/>
                 </StackPanel>
                 <Border DockPanel.Dock="Bottom" Background="#19243A" CornerRadius="14" Padding="13" Margin="0,16,0,0">
-                    <StackPanel>
-                        <TextBlock Text="xumo.dev" Foreground="#8FA7FF" FontWeight="Bold"/>
-                        <TextBlock Text="SchoolControl platformasi" Foreground="#8998B7" FontSize="11" Margin="0,4,0,0"/>
-                    </StackPanel>
+                    <StackPanel><TextBlock Text="xumo.dev" Foreground="#8FA7FF" FontWeight="Bold"/>
+                        <TextBlock Text="SchoolControl platformasi" Foreground="#8998B7" FontSize="11" Margin="0,4,0,0"/></StackPanel>
                 </Border>
             </DockPanel>
         </Border>
         <Grid Grid.Column="1" Margin="30,25,30,24">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="24"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="24"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="24"/><RowDefinition Height="Auto"/><RowDefinition Height="24"/><RowDefinition Height="*"/></Grid.RowDefinitions>
             <DockPanel>
-                <StackPanel>
-                    <TextBlock Text="XUSH KELIBSIZ" Foreground="#8FA7FF" FontSize="11" FontWeight="Bold" CharacterSpacing="100"/>
+                <StackPanel><TextBlock Text="XUSH KELIBSIZ" Foreground="#8FA7FF" FontSize="11" FontWeight="Bold"/>
                     <TextBlock Text="O‘qituvchi paneli" FontSize="29" FontWeight="SemiBold" Margin="0,5,0,0"/>
-                    <TextBlock Text="Maktabdagi o‘quvchilar va qurilmalar holatini boshqaring." Foreground="{StaticResource MutedBrush}" Margin="0,5,0,0"/>
-                </StackPanel>
+                    <TextBlock Text="Maktabdagi o‘quvchilar va qurilmalar holatini boshqaring." Foreground="{StaticResource MutedBrush}" Margin="0,5,0,0"/></StackPanel>
                 <Border DockPanel.Dock="Right" Background="#2B2630" BorderBrush="#51412D" BorderThickness="1" CornerRadius="12" Padding="14,10" VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="8" Height="8" Fill="#F5B94C" Margin="0,0,9,0"/>
-                        <TextBlock Text="Server ulanmagan" Foreground="#FFD98A" FontSize="12"/>
-                    </StackPanel>
+                    <StackPanel Orientation="Horizontal"><Ellipse Width="8" Height="8" Fill="#F5B94C" Margin="0,0,9,0"/>
+                        <TextBlock Text="{Binding ServerStatus}" Foreground="#FFD98A" FontSize="12"/></StackPanel>
                 </Border>
             </DockPanel>
             <UniformGrid Grid.Row="2" Columns="3">
                 <Border Background="{StaticResource PanelBrush}" CornerRadius="18" Padding="20" Margin="0,0,12,0" BorderBrush="#263653" BorderThickness="1">
-                    <StackPanel>
-                        <TextBlock Text="♙  O‘QUVCHILAR" Foreground="#9AA8C7" FontSize="11" FontWeight="Bold"/>
+                    <StackPanel><TextBlock Text="♙  O‘QUVCHILAR" Foreground="#9AA8C7" FontSize="11" FontWeight="Bold"/>
                         <TextBlock Text="{Binding StudentCount}" FontSize="34" FontWeight="Bold" Margin="0,12,0,2"/>
-                        <TextBlock Text="Ro‘yxatga olinganlar" Foreground="#8494B7" FontSize="12"/>
-                    </StackPanel>
+                        <TextBlock Text="Serverdagi ro‘yxat" Foreground="#8494B7" FontSize="12"/></StackPanel>
                 </Border>
                 <Border Background="{StaticResource PanelBrush}" CornerRadius="18" Padding="20" Margin="6,0" BorderBrush="#263653" BorderThickness="1">
-                    <StackPanel>
-                        <TextBlock Text="●  ONLAYN" Foreground="#9AA8C7" FontSize="11" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding OnlineCount}" FontSize="34" FontWeight="Bold" Margin="0,12,0,2"/>
-                        <TextBlock Text="Hozir faol qurilmalar" Foreground="#8494B7" FontSize="12"/>
-                    </StackPanel>
+                    <StackPanel><TextBlock Text="●  ONLAYN" Foreground="#9AA8C7" FontSize="11" FontWeight="Bold"/>
+                        <TextBlock Text="—" FontSize="34" FontWeight="Bold" Margin="0,12,0,2"/>
+                        <TextBlock Text="Presence moduli hali ulanmagan" Foreground="#8494B7" FontSize="12"/></StackPanel>
                 </Border>
                 <Border Background="{StaticResource PanelBrush}" CornerRadius="18" Padding="20" Margin="12,0,0,0" BorderBrush="#263653" BorderThickness="1">
-                    <StackPanel>
-                        <TextBlock Text="◷  BUGUNGI KIRISHLAR" Foreground="#9AA8C7" FontSize="11" FontWeight="Bold"/>
+                    <StackPanel><TextBlock Text="◷  DAVOMAT" Foreground="#9AA8C7" FontSize="11" FontWeight="Bold"/>
                         <TextBlock Text="{Binding TodayCount}" FontSize="34" FontWeight="Bold" Margin="0,12,0,2"/>
-                        <TextBlock Text="Bugungi faollik" Foreground="#8494B7" FontSize="12"/>
-                    </StackPanel>
+                        <TextBlock Text="Davomat moduli hali ulanmagan" Foreground="#8494B7" FontSize="12"/></StackPanel>
                 </Border>
             </UniformGrid>
             <Border Grid.Row="4" Background="{StaticResource PanelBrush}" CornerRadius="20" Padding="22" BorderBrush="#263653" BorderThickness="1">
-                <Grid>
-                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="18"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-                    <DockPanel>
-                        <StackPanel>
-                            <TextBlock Text="O‘quvchilar" FontSize="21" FontWeight="SemiBold"/>
-                            <TextBlock Text="Ulangan o‘quvchilar va ularning holati" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,5,0,0"/>
-                        </StackPanel>
-                        <Button DockPanel.Dock="Right" Content="↻   Yangilash" Click="Refresh_Click" Padding="17,10" Background="#30477E" Foreground="White" BorderThickness="0" FontWeight="SemiBold"/>
-                    </DockPanel>
+                <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="18"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <DockPanel><StackPanel><TextBlock Text="O‘quvchilar" FontSize="21" FontWeight="SemiBold"/>
+                        <TextBlock Text="Serverga ro‘yxatdan o‘tgan o‘quvchilar" Foreground="{StaticResource MutedBrush}" FontSize="12" Margin="0,5,0,0"/></StackPanel>
+                        <Button DockPanel.Dock="Right" Content="↻   Yangilash" Click="Refresh_Click" Padding="17,10" Background="#30477E" Foreground="White" BorderThickness="0" FontWeight="SemiBold"/></DockPanel>
                     <TextBox Grid.Row="2" x:Name="SearchBox" Height="42" Padding="13,10" Background="#0D1426" Foreground="White" BorderBrush="#2B3857" TextChanged="SearchBox_TextChanged" ToolTip="Ism yoki familiya bo‘yicha qidirish"/>
                     <Grid Grid.Row="3" Margin="0,16,0,0">
                         <DataGrid x:Name="StudentsGrid" ItemsSource="{Binding Students}" AutoGenerateColumns="False" IsReadOnly="True"
@@ -122,7 +87,7 @@
                                 <DataGridTextColumn Header="FAMILIYA" Binding="{Binding LastName}" Width="*"/>
                                 <DataGridTextColumn Header="QURILMA" Binding="{Binding DeviceName}" Width="*"/>
                                 <DataGridTextColumn Header="HOLAT" Binding="{Binding Status}" Width="130"/>
-                                <DataGridTextColumn Header="OXIRGI FAOLLIK" Binding="{Binding LastSeen}" Width="190"/>
+                                <DataGridTextColumn Header="RO‘YXAT VAQTI" Binding="{Binding LastSeen}" Width="190"/>
                             </DataGrid.Columns>
                         </DataGrid>
                         <Border Background="#111A2D" IsHitTestVisible="False" Visibility="{Binding EmptyStateVisibility}">
