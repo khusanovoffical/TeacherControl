@@ -16,6 +16,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     public ObservableCollection<StudentRow> Students { get; } = new();
     public int StudentCount => Students.Count;
+    public int RegisteredDeviceCount => Students.Count(s => !string.IsNullOrWhiteSpace(s.DeviceName) && s.DeviceName != "Noma’lum qurilma");
     public int OnlineCount => 0;
     public string TodayCount { get => _todayCount; private set { _todayCount = value; OnPropertyChanged(); } }
     public string ServerStatus { get => _serverStatus; private set { _serverStatus = value; OnPropertyChanged(); } }
@@ -67,6 +68,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
             ServerStatus = "Server ulangan";
             OnPropertyChanged(nameof(StudentCount));
+            OnPropertyChanged(nameof(RegisteredDeviceCount));
             OnPropertyChanged(nameof(OnlineCount));
             OnPropertyChanged(nameof(EmptyStateVisibility));
             ApplySearch();
