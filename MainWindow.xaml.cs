@@ -16,7 +16,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     public ObservableCollection<StudentRow> Students { get; } = new();
     public int StudentCount => Students.Count;
-    public int OnlineCount => Students.Count(s => s.Status == "Onlayn");
+    public int OnlineCount => 0;
     public string TodayCount { get => _todayCount; private set { _todayCount = value; OnPropertyChanged(); } }
     public string ServerStatus { get => _serverStatus; private set { _serverStatus = value; OnPropertyChanged(); } }
     public Visibility EmptyStateVisibility => Students.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -38,7 +38,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (string.IsNullOrWhiteSpace(baseUrl) || string.IsNullOrWhiteSpace(teacherKey))
         {
             ServerStatus = "Server sozlamasi kerak";
-            TodayCount = "—";
             return;
         }
 
@@ -61,9 +60,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 {
                     FirstName = row.FirstName,
                     LastName = row.LastName,
-                    DeviceName = "Ro‘yxatdan o‘tgan",
-                    Status = "Holat noma’lum",
-                    LastSeen = row.CreatedAtUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                    DeviceName = string.IsNullOrWhiteSpace(row.DeviceName) ? "Noma’lum qurilma" : row.DeviceName,
+                    Status = row.DeviceId.Length > 0 ? "Ro‘yxatdan o‘tgan" : "Qurilma ulanmagan",
+                    LastSeen = row.LastSeenUtc?.ToLocalTime().ToString("dd.MM.yyyy HH:mm") ?? "—"
                 });
 
             ServerStatus = "Server ulangan";
@@ -71,7 +70,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             OnPropertyChanged(nameof(OnlineCount));
             OnPropertyChanged(nameof(EmptyStateVisibility));
             ApplySearch();
-            TodayCount = "—";
         }
         catch (HttpRequestException)
         {
@@ -95,7 +93,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         var query = SearchBox.Text.Trim();
         StudentsGrid.Items.Filter = string.IsNullOrWhiteSpace(query) ? null :
             item => item is StudentRow row &&
-                ($"{row.FirstName} {row.LastName}".Contains(query, StringComparison.CurrentCultureIgnoreCase));
+                ($"{row.FirstName} {row.LastName} {row.DeviceName}".Contains(query, StringComparison.CurrentCultureIgnoreCase));
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -107,7 +105,10 @@ public sealed class StudentApiRow
 {
     public string FirstName { get; set; } = "";
     public string LastName { get; set; } = "";
+    public string DeviceId { get; set; } = "";
+    public string DeviceName { get; set; } = "";
     public DateTimeOffset CreatedAtUtc { get; set; }
+    public DateTimeOffset? LastSeenUtc { get; set; }
 }
 
 public sealed class StudentRow
